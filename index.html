@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHARTECH Innovations | CHARLES</title>
+    <style>
+        /* CSS Variables for Theming and Glowing Effects */
+        :root {
+            /* Dark Theme (Default) */
+            --bg-color: #050508;
+            --text-color: #e2e8f0;
+            --navbar-bg: rgba(5, 5, 8, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-cyan: #00f0ff;
+            --accent-cyan-glow: rgba(0, 240, 255, 0.6);
+            --accent-cyan-dark: #0284c7;
+            --glass-blur: blur(12px);
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --navbar-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --tag-bg: rgba(0, 240, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            /* Light Theme */
+            --bg-color: #f4f7f9;
+            --text-color: #0f172a;
+            --navbar-bg: rgba(244, 247, 249, 0.8);
+            --card-bg: rgba(0, 0, 0, 0.03);
+            --card-border: rgba(0, 0, 0, 0.1);
+            --accent-cyan: #0284c7;
+            --accent-cyan-glow: rgba(2, 132, 199, 0.3);
+            --tag-bg: rgba(2, 132, 199, 0.1);
+            --navbar-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Base Reset and Style */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navbar - Fixed and Glassmorphic */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: var(--navbar-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--card-border);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            box-shadow: var(--navbar-shadow);
+        }
+
+        .logo-nav {
+            height: 40px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 5px var(--accent-cyan-glow));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+            list-style: none;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            position: relative;
+            padding: 5px 10px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 8px var(--accent-cyan-glow);
+        }
+
+        /* Main Content and Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 90px auto 40px auto; /* 70px nav + 20px gap */
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* Common Section Styling */
+        section {
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.6s ease-out;
+            padding: 60px 0;
+        }
+
+        section.active {
+            display: block; /* Show active section */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(90deg, var(--text-color), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px var(--accent-cyan-glow);
+        }
+
+        /* Section Backgrounds (Specific requested backgrounds) */
+        #electricity-section {
+            background-image: url('CHARTECH.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 16px;
+            padding: 60px 20px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 40px;
+        }
+
+        #aeronautics-section {
+            background-image: url('ai.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 16px;
+            padding: 60px 20px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 40px;
+        }
+
+        /* Grid Layouts for Competences/Projects */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan));
+            transition: left 0.5s ease;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 8px var(--accent-cyan-glow);
+        }
+
+        .competence-icon {
+            height: 50px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 5px var(--accent-cyan-glow));
+        }
+
+        /* Phone Link Styling */
+        .phone-link {
+            text-decoration: none;
+            color: var(--accent-cyan);
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px var(--accent-cyan-glow);
+            border: 1px solid var(--accent-cyan);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .phone-link:hover {
+            background-color: var(--tag-bg);
+            box-shadow: 0 0 15px var(--accent-cyan-glow);
+        }
+
+        /* Assistant IA Styling */
+        #ai-assistant-section {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 320px;
+            height: 480px;
+            background-color: var(--bg-color);
+            background-image: url('ai.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 20px;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 20px var(--accent-cyan-glow);
+            z-index: 999;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideInUp 0.6s ease;
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        #ai-assistant-section.hidden {
+            display: none !important;
+        }
+
+        .ai-header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--card-border);
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .ai-close {
+            cursor: pointer;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .ai-close:hover {
+            color: var(--accent-cyan);
+        }
+
+        .ai-chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .ai-message {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 15px;
+            border-radius: 12px;
+            max-width: 80%;
+            position: relative;
+        }
+
+        .ai-message::before {
+            content: "✦";
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-cyan);
+            font-size: 1.2rem;
+            text-shadow: 0 0 5px var(--accent-cyan-glow);
+        }
+
+        /* Animations */
+        .glowing-logo {
+            animation: logoGlow 2s infinite alternate;
+        }
+
+        @keyframes logoGlow {
+            from { filter: drop-shadow(0 0 5px var(--accent-cyan-glow)); }
+            to { filter: drop-shadow(0 0 15px var(--accent-cyan-glow)); }
+        }
+
+        /* Tag Styling */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background: var(--tag-bg);
+            border: 1px solid var(--accent-cyan);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            text-shadow: 0 0 5px var(--accent-cyan-glow);
+        }
+
+        /* Controls: Language and Theme */
+        .controls-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .ctrl-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .ctrl-btn:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan-glow);
+            color: var(--accent-cyan);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 1px solid var(--card-border);
+            margin-top: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Simple mobile hide */
+            }
+            .section-title {
+                font-size: 2rem;
+            }
+            #ai-assistant-section {
+                width: 90%;
+                left: 5%;
+                right: 5%;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <nav>
+        <div class="logo-container">
+            <img src="CHARTECH.png" alt="CHARTECH" class="logo-nav glowing-logo" onclick="showSection('hero-section')">
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="nav-link active" onclick="showSection('hero-section')">Accueil</a></li>
+            <li><a href="#" class="nav-link" onclick="showSection('web-section')">Développement Web</a></li>
+            <li><a href="#" class="nav-link" onclick="showSection('aeronautics-section')">Ingénierie Aéronautique</a></li>
+            <li><a href="#" class="nav-link" onclick="showSection('electricity-section')">Électricité</a></li>
+            <li><a href="#" class="nav-link" onclick="toggleAIAssistant()">L'IA</a></li>
+        </ul>
+        <div class="controls-group">
+            <button class="ctrl-btn" onclick="toggleTheme()">💡 Thème</button>
+            <button class="ctrl-btn" onclick="toggleLanguage()">🌐 FR/EN</button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+
+        <section id="hero-section" class="active">
+            <h1 class="section-title">Innovations Technologiques</h1>
+            <div class="grid">
+                <div class="card" style="grid-column: 1 / -1; align-items: center; text-align: center;">
+                    <img src="CHARTECH.png" alt="CHARTECH" style="height: 120px; margin-bottom: 20px;" class="glowing-logo">
+                    <h3 data-i18n="heroWelcome">Bâtisseur de l'Avenir Technologique</h3>
+                    <p data-i18n="heroDesc">Basé à Bukavu. Nous fusionnons le code, l'électronique et l'aérospatiale pour repousser les limites de la technologie de demain.</p>
+                    <a href="tel:+243892959679" class="phone-link">📞 +243 892 959 679</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="web-section">
+            <h2 class="section-title" data-i18n="webTitle">Notre Expertise Web</h2>
+            <p style="text-align: center; margin-bottom: 40px;" data-i18n="webDesc">Création d'applications web performantes, réactives et interactives, de l'architecture front-end aux logiques back-end complexes.</p>
+            <div class="grid">
+                <div class="card">
+                    <img src="html.png" alt="HTML5" class="competence-icon">
+                    <h3>HTML5 / CSS3</h3>
+                    <p data-i18n="webHTML">Structure et design sémantique avancés pour des interfaces réactives et modernes.</p>
+                </div>
+                <div class="card">
+                    <img src="js.png" alt="JavaScript" class="competence-icon">
+                    <h3>JavaScript (ES6+)</h3>
+                    <p data-i18n="webJS">Logique front-end interactive et intégration API pour des applications fluides.</p>
+                </div>
+                <div class="card">
+                    <img src="py.png" alt="Python" class="competence-icon">
+                    <h3>Python (Web)</h3>
+                    <p data-i18n="webPy">Développement d'applications back-end robustes avec Django/Flask et analyse de données.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="aeronautics-section">
+            <h2 class="section-title" data-i18n="aeroTitle">Ingénierie Aéronautique</h2>
+            <p style="text-align: center; margin-bottom: 40px; color: white; text-shadow: 0 0 10px black;" data-i18n="aeroDesc">Pionnier dans la conception conceptuelle de systèmes d'aviation futuristes et d'automatisation.</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Conception eVTOL</h3>
+                    <p data-i18n="aeroEVTOL">Modélisation d'aéronefs monoplaces à décollage vertical propulsés par 8 moteurs électriques.</p>
+                    <div class="tags">
+                        <span class="tag">Conception Conceptuelle</span>
+                        <span class="tag">Aérodynamique</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Systèmes de Drones</h3>
+                    <p data-i18n="aeroDrones">Conception conceptuelle et modélisation de systèmes de propulsion avancés.</p>
+                    <div class="tags">
+                        <span class="tag">Drones</span>
+                        <span class="tag">Propulsion</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="electricity-section">
+            <h2 class="section-title" data-i18n="elecTitle">Solutions Électriques</h2>
+            <p style="text-align: center; margin-bottom: 40px;" data-i18n="elecDesc">Expertise avancée en installations et maintenance pour les secteurs domestiques et industriels.</p>
+            <div class="grid">
+                <div class="card">
+                    <h3>Électricité Domestique</h3>
+                    <p data-i18n="elecDom">Installations complètes, tableaux électriques, sécurité et domotique pour les résidences.</p>
+                    <div class="tags">
+                        <span class="tag">Tableaux Électriques</span>
+                        <span class="tag">Domotique</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Électricité Industrielle</h3>
+                    <p data-i18n="elecInd">Maintenance de tableaux de distribution de puissance, automatisation et commande moteur.</p>
+                    <div class="tags">
+                        <span class="tag">Automatisation (B&R, Allen Bradley)</span>
+                        <span class="tag">Puissance</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div id="ai-assistant-section" class="hidden">
+        <div class="ai-header">
+            <h3>CHARTECH Assistant</h3>
+            <span class="ai-close" onclick="toggleAIAssistant()">X</span>
+        </div>
+        <div class="ai-chat-body">
+            <div class="ai-message" data-i18n="aiHello">Je m'appelle CHARLES, merci de visiter mon site.</div>
+        </div>
+    </div>
+
+    <footer>
+        <p style="opacity: 0.5;">&copy; 2026 CHARLES Technology (CHARTECH). Tous droits réservés.</p>
+        <p>Bâtisseur de l'Avenir.</p>
+    </footer>
+
+    <script>
+        // Dictionnaire de traduction
+        const translations = {
+            fr: {
+                heroWelcome: "Bâtisseur de l'Avenir Technologique",
+                heroDesc: "Basé à Bukavu. Nous fusionnons le code, l'électronique et l'aérospatiale pour repousser les limites de la technologie de demain.",
+                webTitle: "Notre Expertise Web",
+                webDesc: "Création d'applications web performantes, réactives et interactives, de l'architecture front-end aux logiques back-end complexes.",
+                webHTML: "Structure et design sémantique avancés pour des interfaces réactives et modernes.",
+                webJS: "Logique front-end interactive et intégration API pour des applications fluides.",
+                webPy: "Développement d'applications back-end robustes avec Django/Flask et analyse de données.",
+                aeroTitle: "Ingénierie Aéronautique",
+                aeroDesc: "Pionnier dans la conception conceptuelle de systèmes d'aviation futuristes et d'automatisation.",
+                aeroEVTOL: "Modélisation d'aéronefs monoplaces à décollage vertical propulsés par 8 moteurs électriques.",
+                aeroDrones: "Conception conceptuelle et modélisation de systèmes de propulsion avancés.",
+                elecTitle: "Solutions Électriques",
+                elecDesc: "Expertise avancée en installations et maintenance pour les secteurs domestiques et industriels.",
+                elecDom: "Installations complètes, tableaux électriques, sécurité et domotique pour les résidences.",
+                elecInd: "Maintenance de tableaux de distribution de puissance, automatisation et commande moteur.",
+                aiHello: "Je m'appelle CHARLES, merci de visiter mon site."
+            },
+            en: {
+                heroWelcome: "Builder of the Technological Future",
+                heroDesc: "Based in Bukavu. We merge code, electronics, and aerospace to push the boundaries of tomorrow's technology.",
+                webTitle: "Our Web Expertise",
+                webDesc: "Building high-performance, responsive, and interactive web applications, from front-end to complex back-end architectures.",
+                webHTML: "Advanced semantic structure and design for modern, responsive interfaces.",
+                webJS: "Interactive front-end logic and API integration for seamless user experiences.",
+                webPy: "Robust back-end application development with Django/Flask and data analytics.",
+                aeroTitle: "Aerospace Engineering",
+                aeroDesc: "Pioneering conceptual design of futuristic aviation systems and automation.",
+                aeroEVTOL: "Modeling single-seat vertical take-off aircraft powered by 8 electric motors.",
+                aeroDrones: "Conceptual design and modeling of advanced drone propulsion systems.",
+                elecTitle: "Electrical Solutions",
+                elecDesc: "Advanced expertise in installation and maintenance for domestic and industrial sectors.",
+                elecDom: "Complete residential installations, main panels, safety, and home automation.",
+                elecInd: "Maintenance of industrial power distribution panels, automation, and motor controls.",
+                aiHello: "I am CHARLES, thank you for visiting my site."
+            }
+        };
+
+        let currentLang = 'fr';
+
+        // Gestion de l'affichage dynamique des sections
+        function showSection(sectionId) {
+            // Cacher toutes les sections
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => section.classList.remove('active'));
+
+            // Afficher la section demandée
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Masquer l'assistant IA si on change de section
+            const aiAssistant = document.getElementById('ai-assistant-section');
+            if (!aiAssistant.classList.contains('hidden') && sectionId !== 'ai-section') {
+                aiAssistant.classList.add('hidden');
+            }
+
+            // Mettre à jour la classe active de la navigation
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = Array.from(navLinks).find(link => link.getAttribute('onclick').includes(sectionId));
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+
+        // Commutateur de Thème (Clair/Sombre)
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+        }
+
+        // Commutateur de Langue (FR/EN)
+        function toggleLanguage() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            
+            // Mettre à jour tous les éléments avec l'attribut data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        // Commutateur de l'Assistant IA
+        function toggleAIAssistant() {
+            const aiAssistant = document.getElementById('ai-assistant-section');
+            aiAssistant.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>
+
